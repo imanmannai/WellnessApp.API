@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import WellnessCharts from './components/WellnessCharts'
 import {
     getWellnessEntries,
     createWellnessEntry,
@@ -148,6 +149,8 @@ function Dashboard() {
             >
                 Logga ut
             </button>
+
+            <WellnessCharts entries={entries} />
 
             <h2 className="mt-4">Lägg till wellness-entry</h2>
 
