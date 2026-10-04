@@ -29,6 +29,7 @@ function Dashboard() {
     const [notes, setNotes] = useState('')
 
     const [editingId, setEditingId] = useState<number | null>(null)
+    const today = new Date().toLocaleDateString('sv-SE')
 
     useEffect(() => {
         const loadEntries = async () => {
@@ -167,6 +168,8 @@ function Dashboard() {
                         className="form-control"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
+                        min="2000-01-01"
+                        max={today}
                         required
                     />
                 </div>
