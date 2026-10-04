@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="WellnessApp.API/WellnessApp.API.csproj" />
+  <Project Path="WellnessApp.Web/wellnessapp.web.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+</Solution>
