@@ -83,4 +83,20 @@ export const login = async (email: string, password: string) => {
     return response.data
 }
 
+export const register = async (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+) => {
+    const response = await api.post('/Auth/register', {
+        firstName,
+        lastName,
+        email,
+        password,
+    })
+
+    return response.data
+}
+
 export default api
