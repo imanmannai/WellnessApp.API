@@ -20,7 +20,9 @@ namespace WellnessApp.API
                 options.AddPolicy("AllowFrontend", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:60118")
+                        .WithOrigins(
+                            "http://localhost:60118",
+                            "http://localhost:60119")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -52,17 +54,6 @@ namespace WellnessApp.API
                 };
             });
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowReactApp", policy =>
-                {
-                    policy
-                        .WithOrigins("http://localhost:60119")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
-
             builder.Services.AddControllers();
 
             builder.Services.AddScoped<IWellnessEntryService, WellnessEntryService>();
@@ -83,11 +74,11 @@ namespace WellnessApp.API
                     Description = "Enter your JWT token."
                 });
 
-                            options.AddSecurityRequirement(document =>
-               new Microsoft.OpenApi.OpenApiSecurityRequirement
-               {
-                   [new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", document)] = []
-               });
+                options.AddSecurityRequirement(document =>
+                    new Microsoft.OpenApi.OpenApiSecurityRequirement
+                    {
+                        [new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", document)] = []
+                    });
             });
 
             var app = builder.Build();
@@ -103,7 +94,6 @@ namespace WellnessApp.API
             app.UseCors("AllowFrontend");
 
             app.UseAuthentication();
-            app.UseCors("AllowReactApp");
             app.UseAuthorization();
 
             app.MapControllers();
