@@ -14,6 +14,35 @@ namespace WellnessApp.API.Services
             _context = context;
         }
 
+        public async Task<List<WellnessEntry>> GetEntriesAsync(string userId)
+        {
+            return await _context.WellnessEntries
+                .Where(e => e.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<WellnessEntry> CreateEntryAsync(
+            string userId,
+            CreateWellnessEntryDto dto)
+        {
+            var entry = new WellnessEntry
+            {
+                UserId = userId,
+                Date = dto.Date,
+                Mood = dto.Mood,
+                SleepHours = dto.SleepHours,
+                StressLevel = dto.StressLevel,
+                PhysicalActivityMinutes = dto.PhysicalActivityMinutes,
+                Notes = dto.Notes
+            };
+
+            _context.WellnessEntries.Add(entry);
+
+            await _context.SaveChangesAsync();
+
+            return entry;
+        }
+
         public async Task<WellnessEntry?> UpdateEntryAsync(
             int id,
             string userId,
@@ -38,6 +67,7 @@ namespace WellnessApp.API.Services
 
             return entry;
         }
+
         public async Task<bool> DeleteEntryAsync(int id, string userId)
         {
             var entry = await _context.WellnessEntries
