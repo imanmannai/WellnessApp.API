@@ -1,10 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WellnessApp.API.Data;
 using WellnessApp.API.DTOs;
-using WellnessApp.API.Entities;
 using WellnessApp.API.Services;
 
 namespace WellnessApp.API.Controllers
@@ -14,14 +11,11 @@ namespace WellnessApp.API.Controllers
     [Authorize]
     public class WellnessEntriesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IWellnessEntryService _wellnessEntryService;
 
         public WellnessEntriesController(
-            ApplicationDbContext context,
             IWellnessEntryService wellnessEntryService)
         {
-            _context = context;
             _wellnessEntryService = wellnessEntryService;
         }
 
@@ -31,9 +25,7 @@ namespace WellnessApp.API.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var entries = await _context.WellnessEntries
-                .Where(e => e.UserId == userId)
-                .ToListAsync();
+            var entries = await _wellnessEntryService.GetEntriesAsync(userId!);
 
             return Ok(entries);
         }
@@ -44,20 +36,9 @@ namespace WellnessApp.API.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var entry = new WellnessEntry
-            {
-                UserId = userId!,
-                Date = dto.Date,
-                Mood = dto.Mood,
-                SleepHours = dto.SleepHours,
-                StressLevel = dto.StressLevel,
-                PhysicalActivityMinutes = dto.PhysicalActivityMinutes,
-                Notes = dto.Notes
-            };
-
-            _context.WellnessEntries.Add(entry);
-
-            await _context.SaveChangesAsync();
+            var entry = await _wellnessEntryService.CreateEntryAsync(
+                userId!,
+                dto);
 
             return Ok(entry);
         }
