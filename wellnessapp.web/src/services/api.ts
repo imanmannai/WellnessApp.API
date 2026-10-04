@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'https://localhost:7093/api',
+    baseURL: import.meta.env.VITE_API_URL ?? 'https://localhost:7093/api',
 })
 
 export const getWellnessGoals = async () => {
