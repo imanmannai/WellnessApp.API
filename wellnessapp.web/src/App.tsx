@@ -277,7 +277,7 @@ function Dashboard() {
                     <div className="card-body">
 
                         <h5 className="card-title">
-                            {entry.date}
+                            {String(entry.date).split('T')[0]}
                         </h5>
 
                         <p>
