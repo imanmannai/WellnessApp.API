@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - wellness-api-iman
+name: Build and deploy .NET API to Azure Web App - wellness-api-iman
 
 on:
   push:
@@ -11,43 +8,50 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          node-version: '24.x'
+          dotnet-version: '10.0.x'
 
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
-      
-      - name: Upload artifact for deployment job
+      - name: Restore
+        run: dotnet restore WellnessApp.API/WellnessApp.API.csproj
+
+      - name: Build
+        run: dotnet build WellnessApp.API/WellnessApp.API.csproj --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish WellnessApp.API/WellnessApp.API.csproj --configuration Release --no-build --output ./publish
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: .
+          name: dotnet-api
+          path: ./publish
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-      
+          name: dotnet-api
+          path: ./publish
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -55,11 +59,9 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_ACB56A911E344CAB9416852E614AEF3C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_FBFE56709A464BCD9CAE07E1F347FA32 }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
           app-name: 'wellness-api-iman'
           slot-name: 'Production'
-          package: .
-          
+          package: ./publish
