@@ -15,16 +15,14 @@ namespace WellnessApp.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var allowedOrigins = builder.Configuration
-             .GetSection("Cors:AllowedOrigins")
-             .Get<string[]>() ?? Array.Empty<string>();
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
                     policy
-                        .WithOrigins(allowedOrigins)
+                        .WithOrigins(
+                            "https://wellness-web-iman-cvhrhmghecfsfwev.norwayeast-01.azurewebsites.net"
+                        )
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
