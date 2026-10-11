@@ -37,4 +37,4 @@ jobs:
         with:
           app-name: wellness-web-iman
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-          package: wellnessapp.web/dist
+          package: ./wellnessapp.web/dist
