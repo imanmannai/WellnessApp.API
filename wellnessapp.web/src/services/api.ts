@@ -1,7 +1,9 @@
+
 import axios from 'axios'
 
 const api = axios.create({
-   baseURL: import.meta.env.VITE_API_URL ?? 'https://wellness-api-iman-cpbaeggacpfpexd9.norwayeast-01.azurewebsites.net/api',
+    baseURL: import.meta.env.VITE_API_URL ?? 'https://wellness-api-iman-cpbaeggacpfpexd9.norwayeast-01.azurewebsites.net/api',
+})
 
 export const getWellnessGoals = async () => {
     const response = await api.get('/WellnessGoals')
@@ -19,6 +21,7 @@ export const getWellnessEntries = async () => {
 
     return response.data
 }
+
 export const createWellnessEntry = async (entry: {
     date: string
     mood: number
@@ -47,6 +50,7 @@ export const deleteWellnessEntry = async (id: number) => {
         },
     })
 }
+
 export const updateWellnessEntry = async (
     id: number,
     entry: {
