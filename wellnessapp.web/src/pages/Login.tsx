@@ -1,26 +1,26 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { login } from '../services/api'
 
 function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
 
     const navigate = useNavigate()
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
+        setErrorMessage('')
 
         try {
             const data = await login(email, password)
 
             localStorage.setItem('token', data.token)
-
-            console.log('Login successful')
-
             navigate('/dashboard')
         } catch (error) {
             console.error('Login failed:', error)
+            setErrorMessage('Fel e-postadress eller lösenord.')
         }
     }
 
@@ -53,10 +53,24 @@ function Login() {
                             />
                         </div>
 
+                        {errorMessage && (
+                            <div className="alert alert-danger">
+                                {errorMessage}
+                            </div>
+                        )}
+
                         <button type="submit" className="btn btn-primary">
                             Logga in
                         </button>
                     </form>
+
+                    <hr />
+
+                    <p>Har du inget konto ännu?</p>
+
+                    <Link to="/register" className="btn btn-outline-primary">
+                        Skapa konto
+                    </Link>
                 </div>
             </div>
         </div>
